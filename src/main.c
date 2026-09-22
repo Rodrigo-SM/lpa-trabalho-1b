@@ -3,9 +3,16 @@
 int mensagemInicial(void) {
     int continuar;
 
-    printf("Ola, digite 1 para iniciar um pedido\n");
-    printf("Digite 0 para encerrar a sessao\n");
-    scanf("%d", &continuar);
+    do {
+        printf("Ola, digite 1 para iniciar um pedido\n");
+        printf("Digite 0 para encerrar a sessao\n");
+        scanf("%d", &continuar);
+
+        if (continuar != 0 && continuar != 1) {
+            printf("Digite uma opcao valida.\n");
+        }
+
+    } while (continuar != 0 && continuar != 1);
 
     return continuar;
 }
@@ -71,12 +78,19 @@ float calcularPeso(float peso, float subTotalInicial){
 int exibirModalidade(void) {
     int modalidade;
 
+    do{
     printf("\nIndique a modalidade:\n");
     printf("1 - Economica - sem valor adicional\n");
     printf("2 - Expressa - 15%% adicional\n");
     printf("3 - Prioritaria - 30%% adicional\n");
     printf("Modalidade desejada: ");
     scanf("%d", &modalidade);
+    
+    if(modalidade < 1 || modalidade > 3){
+    	printf("\nEscolha um numero valido para modalidade\n");
+	}
+    
+	} while (modalidade < 1 || modalidade > 3);
 
     return modalidade;
 }
@@ -123,6 +137,32 @@ float validaProtecao() {
     return adicionalProtecao;
 }
 
+float calculoSubFinal (float subTotalInicial , float adicionalPeso , float adicionalModalidade , float adicionalProtecao){
+	float subValorFinal = subTotalInicial + adicionalPeso + adicionalModalidade + adicionalProtecao;
+	
+	return subValorFinal;
+}
+
+
+int continuarPedido(void) {
+    int continuar;
+
+    do {
+        printf("\nDeseja fazer um novo pedido?\n");
+        printf("1 - Sim\n");
+        printf("0 - Nao\n");
+        scanf("%d", &continuar);
+
+        if (continuar != 0 && continuar != 1) {
+            printf("Digite uma opcao valida.\n");
+        }
+
+    } while (continuar != 0 && continuar != 1);
+
+    return continuar;
+}
+
+
 int main(void) {
     int continuar;
     int modalidade;
@@ -133,10 +173,16 @@ int main(void) {
     float adicionalPeso; 
     float adicionalModalidade = 0;
     float adicionalProtecao;
-    do {
-        continuar = mensagemInicial();
-		
-			
+    float subValorFinal;
+    
+    
+    continuar = mensagemInicial();
+    
+    
+    
+	if(continuar == 1){  
+    	do {
+    				
        
             distancia = informarDistancia();
             valorBase = calcularValorBase(distancia);
@@ -149,23 +195,20 @@ int main(void) {
            	
             modalidade = exibirModalidade();
 
-            if(modalidade < 1 || modalidade > 3){
-            	printf("digite uma modalidade valida");
-            	modalidade = exibirModalidade();
-			}
+		
 			adicionalModalidade = calcularModalidade(modalidade , subTotalInicial);
            
            
             adicionalProtecao = validaProtecao();
             
+            subValorFinal = calculoSubFinal(subTotalInicial , adicionalPeso , adicionalModalidade , adicionalProtecao);
             
-            
-            printf("continuar : %d", continuar);
+            continuar = continuarPedido();
         	
-     }while (continuar == 1);
-
+     	}while (continuar == 1);
+	}
     printf("\nAtendimento encerrado.\n");
-
+	printf("Valor final %.2f", subValorFinal);
 
     return 0;
 }
