@@ -20,8 +20,13 @@ int mensagemInicial(void) {
 float informarDistancia(void) {
     float distancia;
 
-    printf("\nIndique a distancia da entrega em km: ");
+    do{
+    	printf("\nIndique a distancia da entrega em km: \n");
     scanf("%f", &distancia);
+	if(distancia <= 0){
+		printf("\nIndique uma distancia valida");
+	}
+	} while (distancia ==0);
 
     return distancia;
 }
@@ -53,14 +58,21 @@ float calcularDistancia(float distancia , int valorBase){
 float informarPeso(void) {
     float peso;
 
-    printf("\nIndique o peso em kg: ");
+    do{
+    	printf("\nIndique o peso em kg: ");
     scanf("%f", &peso);
+	if(peso <= 0){
+		printf("\nInforme uma peso acima de 0\n");
+		
+	}
+	} while (peso <= 0);
 
     return peso;
 }
 
 float calcularPeso(float peso, float subTotalInicial){
 	float adicionalPeso;
+	
 	
 	if(peso > 0 && peso <= 2){
 		adicionalPeso = 0;
@@ -113,6 +125,17 @@ float calcularModalidade(int modalidade , float subTotalInicial){
 	return adicionalModalidade;
 }
 
+void contarModalidade(int modalidade, int *contadorEconomico, int *contadorExpresso, int *contadorPrioridade) {
+
+    if (modalidade == 1) {
+        (*contadorEconomico)++;
+    } else if (modalidade == 2) {
+        (*contadorExpresso)++;
+    } else if (modalidade == 3) {
+        (*contadorPrioridade)++;
+    }
+}
+
 
 float validaProtecao() {
     int protecao;
@@ -162,6 +185,11 @@ int continuarPedido(void) {
     return continuar;
 }
 
+int calculoTentativas(int pedidos ){
+	int adicionalTentativas = (pedidos - 1) * 4;
+	
+	return adicionalTentativas;
+}
 
 int main(void) {
     int continuar;
@@ -174,13 +202,16 @@ int main(void) {
     float adicionalModalidade = 0;
     float adicionalProtecao;
     float subValorFinal;
-    
+    int pedidos = 0;
+    int adicionalTentativas;
+    int contadorEconomico = 0, contadorExpresso = 0, contadorPrioridade =0;
     
     continuar = mensagemInicial();
     
     
     
 	if(continuar == 1){  
+	
     	do {
     				
        
@@ -198,6 +229,7 @@ int main(void) {
 		
 			adicionalModalidade = calcularModalidade(modalidade , subTotalInicial);
            
+           contarModalidade(modalidade, &contadorEconomico, &contadorExpresso, &contadorPrioridade);
            
             adicionalProtecao = validaProtecao();
             
@@ -205,10 +237,24 @@ int main(void) {
             
             continuar = continuarPedido();
         	
+        	pedidos++;
+        	
+        	adicionalTentativas = calculoTentativas(pedidos);
      	}while (continuar == 1);
 	}
     printf("\nAtendimento encerrado.\n");
+    printf("\n=== Resumo do atendimento ===\n");
+    printf("Quantidade de pedidos realizados: %d\n", pedidos);
+    printf("valor dos pedidos adicionais: %d\n", adicionalTentativas);
+    printf("Valor total calculado na sessao\n");
+    printf("Valor medio das entregas\n");
+    printf("Quantidade de entregas Economicas: %d\n", contadorEconomico);
+    printf("Quantidade de entregas Expressas: %d\n", contadorExpresso);
+    printf("Quantidade de entregas Prioridade: %d\n", contadorPrioridade);
+    printf("Maior valor de entrega encontrado\n");
+    printf("Menor valor de entrega encontrado\n");
 	printf("Valor final %.2f", subValorFinal);
+	
 
     return 0;
 }
